@@ -2,15 +2,20 @@ const colyseus = require("colyseus");
 const express = require("express");
 const WebSocket = require("ws");
 const basePort = process.env.port || 3000;
+const app = express();
+const gameServer = new colyseus.Server();
 var player;
 var chat = "";
 var processedDamage = 0;
-const gameServer = new colyseus.Server();
 //put code below
 const wss = new WebSocket.Server({
     port: basePort + 1
 });
+const moderationPortalPort = basePort + 2
 
+app.get('/chatlogs', (req, res) => {
+    res.send(`${chat}`)
+})
 
 class GameRoom extends colyseus.Room {
     // When room is initialized
@@ -31,7 +36,7 @@ class GameRoom extends colyseus.Room {
 
     // When a client leaves the room
     onLeave (client, consented) {
-        console.log("Player leaved.")
+        console.log("Player left.")
         player = undefined;
     }
 
@@ -46,11 +51,13 @@ class GameRoom extends colyseus.Room {
         console.log(client.sessionId + " at, x: " + player.x, "y: " + player.y);
     }
 
-    onMove (client, data) {
+    //Chat POST
+    onChatPost (client, data) {
         console.log("Player chatted.")
         chat += data.chatString;
     }
 
+    //Damage
     onDamage (clientFighting, clientDamage, data) {
         console.log("Player damaged.")
         processedDamage = data.damage;
@@ -63,3 +70,6 @@ gameServer.listen(basePort);
 gameServer.onShutdown(function () {
     console.log("Stopping Generic MMO server...")
 });
+app.listen(moderationPortalPort, () => {
+    console.log(`Example app listening at http://localhost:${moderationPortalPort}`)
+})
