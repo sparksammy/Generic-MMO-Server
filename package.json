@@ -1,0 +1,16 @@
+{
+  "name": "serverside-yra",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "colyseus": "^0.13.7",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samuel Lord",
+  "license": "MIT"
+}
